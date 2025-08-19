@@ -125,7 +125,7 @@ def _create_short_post_strategy(
     tone: str
 ) -> ContentStrategy:
     """Create a short tweet strategy (classic 280 chars)."""
-    hashtags = mix_hashtags(["#AI", "#Web3"], max_count=3)
+    hashtags = mix_hashtags(["#AI", "#Web3"], 3)
     mentions = pick_mentions(title + " " + content)
     
     return ContentStrategy(
@@ -145,7 +145,7 @@ def _create_long_post_strategy(
     max_length: int
 ) -> ContentStrategy:
     """Create a long-form post strategy (Premium X)."""
-    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi", "#Crypto"], max_count=5)
+    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi", "#Crypto"], 5)
     mentions = pick_mentions(title + " " + content)
     
     # Create engaging long-form content
@@ -173,7 +173,7 @@ def _create_thread_strategy(
     max_length: int
 ) -> ContentStrategy:
     """Create a thread strategy for complex stories."""
-    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi", "#Crypto"], max_count=5)
+    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi", "#Crypto"], 5)
     mentions = pick_mentions(title + " " + content)
     
     # Split content into thread parts
@@ -211,7 +211,7 @@ def _create_image_strategy(
     tone: str
 ) -> ContentStrategy:
     """Create a strategy that includes image generation."""
-    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi"], max_count=4)
+    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi"], 4)
     mentions = pick_mentions(title + " " + content)
     
     # Create image prompt
