@@ -12,7 +12,7 @@ style:
   use_mentions: true
 
 sources:
-  min_recency_hours: 72
+  min_recency_hours: 24
   rss_feeds:
     - https://openai.com/blog/rss.xml
     - https://www.deepmind.com/blog/rss.xml
