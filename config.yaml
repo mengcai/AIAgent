@@ -1,6 +1,6 @@
 app:
   timezone: America/Los_Angeles
-  dry_run: true
+  dry_run: false
   max_daily_posts: 1
   post_times: ["08:00", "20:00"]
 
