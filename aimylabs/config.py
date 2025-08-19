@@ -38,7 +38,7 @@ class Config:
     allowlist_domains: List[str] = field(default_factory=list)
 
     openai_api_key: Optional[str] = None
-    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o-mini")
+    openai_model: str = os.getenv("OPENAI_MODEL", "gpt-5-mini")
 
     x_consumer_key: Optional[str] = None
     x_consumer_secret: Optional[str] = None
