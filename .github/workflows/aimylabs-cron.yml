@@ -1,6 +1,8 @@
 name: Aimylabs Scheduled Posts
 
 on:
+  push:
+    branches: [ main ]
   schedule:
     # 08:00 and 20:00 PST (UTC-8, no DST adjustment). In UTC: 16:00 and 04:00 next day.
     # Note: GitHub cron is UTC and does NOT auto-adjust for daylight saving time.
