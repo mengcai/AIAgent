@@ -29,6 +29,12 @@ class AimylabsAgent:
         new_articles = [a for a in articles if not was_posted(cfg.db_path, a.url)]
 
         print(f"Collected {len(articles)} articles; {len(new_articles)} new after dedupe")
+        if articles:
+            print(f"Sample articles: {[a.title[:50] + '...' for a in articles[:3]]}")
+        if new_articles:
+            print(f"New articles to process: {[a.title[:50] + '...' for a in new_articles[:3]]}")
+        else:
+            print("No new articles to post (all may have been posted before)")
 
         if not new_articles:
             return []
