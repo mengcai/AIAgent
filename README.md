@@ -1,11 +1,17 @@
-## Aimylabs — Autonomous AI + Web3 News-to-X Agent
+## Aimylabs — Premium AI + Web3 News-to-X Agent
 
-Aimylabs continuously monitors trusted AI and Web3 sources, distills key insights with an LLM, and automatically posts concise, engaging tweets (≤280 chars) to your X (Twitter) account on a schedule.
+Aimylabs continuously monitors trusted AI and Web3 sources, distills key insights with an LLM, and automatically posts engaging content to your X (Twitter) Premium account. Now with **long-form posts (25,000 chars)**, **threads**, and **AI-generated images** via Grok!
 
 ### Features
 - **News collection**: Monitor curated RSS feeds from credible AI and Web3 sources; filter by recency and domain allowlist.
-- **Summarization**: Use an LLM to craft tweet-ready, human-like summaries with optional hashtags/emojis and tone controls.
-- **Scheduling**: Post automatically at configured daily times (e.g., 09:00 and 15:00) using a lightweight scheduler.
+- **Content generation**: Use an LLM to craft engaging content in multiple formats:
+  - **Short tweets** (classic 280 chars)
+  - **Long-form posts** (up to 25,000 chars for Premium X)
+  - **Threads** for complex stories with multiple parts
+  - **Image-enhanced posts** with Grok-generated visuals
+- **Smart content strategy**: Automatically choose the best format based on news importance
+- **Multiple tones**: Switch between witty, professional, thought-leader, hype, or meme styles
+- **Scheduling**: Post automatically at configured daily times using a lightweight scheduler.
 - **Customization**: Configure tone, frequency, hashtags, schedule times, dry-run, and source lists.
 - **Safety**: De-duplicate and avoid re-posting the same links; basic domain allowlisting.
 
@@ -32,8 +38,11 @@ Required env vars for posting to X (Twitter):
 - `X_ACCESS_TOKEN`
 - `X_ACCESS_TOKEN_SECRET`
 
-Required env var for summarization (OpenAI; pluggable):
+Required env var for content generation (OpenAI; pluggable):
 - `OPENAI_API_KEY`
+
+Required env var for image generation (Grok):
+- `GROK_API_KEY`
 
 Optional:
 - `AIMYLABS_DB_PATH` — where to store the SQLite DB (default: `~/.aimylabs/aimylabs.db`).
@@ -63,11 +72,17 @@ app:
   dry_run: true            # if true, does not post; logs instead
   max_daily_posts: 2       # cap posts per day
   post_times: ["09:00", "15:00"]  # local times or TZ-aware per timezone
+  use_premium_features: true  # Enable long posts, threads, images
+  max_post_length: 25000   # Premium X character limit
+  enable_threads: true     # Post threads for complex stories
+  enable_images: true      # Generate images with Grok
 
 style:
-  tone: professional       # professional | witty | hype
+  tone: professional       # professional | witty | hype | meme | thought_leader
   use_emojis: true
-  default_hashtags: ["#AI", "#Web3"]
+  default_hashtags: ["#AI", "#Web3", "#DeFi", "#Crypto"]
+  content_strategy: auto   # auto | short | long | thread | image
+  thread_max_posts: 5      # Max posts in a thread
 
 sources:
   min_recency_hours: 36

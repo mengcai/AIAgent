@@ -5,10 +5,11 @@ from typing import List
 
 from .collectors import collect_rss_articles
 from .config import Config
-from .publisher import create_x_client, publish_tweet
+from .publisher import create_x_client, publish_tweet, publish_thread, publish_long_post, publish_with_image
 from .storage import ensure_db, mark_posted, was_posted
 from .summarizer import summarize_to_tweet
-from .mentions import pick_mentions, mix_hashtags
+from .content_strategy import determine_content_strategy
+from .image_generator import generate_news_image
 
 
 class AimylabsAgent:
@@ -49,42 +50,76 @@ class AimylabsAgent:
                 cfg.x_access_token_secret or "",
             )
 
-        # Summarize concurrently (limit concurrency to avoid rate limits)
+        # Process articles with content strategy
         sem = asyncio.Semaphore(4)
 
-        async def summarize_article(a):
+        async def process_article(a):
             async with sem:  # type: ignore[attr-defined]
-                hashtags = mix_hashtags(cfg.style.default_hashtags, cfg.style.max_hashtags)
-                mentions = pick_mentions(a.title + " " + (a.summary or "")) if cfg.style.use_mentions else []
-                text = await summarize_to_tweet(
-                    url=a.url,
+                # Determine content strategy
+                strategy = determine_content_strategy(
                     title=a.title,
+                    content=a.summary or "",
+                    url=a.url,
                     tone=cfg.style.tone,
-                    use_emojis=cfg.style.use_emojis,
-                    hashtags=hashtags,
-                    mentions=mentions,
-                    openai_api_key=cfg.openai_api_key or "",
-                    model=cfg.openai_model,
+                    config_strategy=cfg.style.content_strategy,
+                    max_length=cfg.app.max_post_length if cfg.app.use_premium_features else 280,
+                    enable_threads=cfg.app.enable_threads,
+                    enable_images=cfg.app.enable_images
                 )
-                return a, text
+                
+                # Generate content based on strategy
+                if strategy.content_type == "image" and cfg.app.enable_images and cfg.grok_api_key:
+                    # Generate image
+                    image_result = await generate_news_image(
+                        title=a.title,
+                        content=a.summary or "",
+                        tone=cfg.style.tone,
+                        grok_api_key=cfg.grok_api_key,
+                        grok_model=cfg.grok_model
+                    )
+                    strategy.use_image = image_result.success
+                    if image_result.success:
+                        strategy.image_prompt = image_result.image_data
+                
+                return a, strategy
 
-        pairs = await asyncio.gather(*(summarize_article(a) for a in new_articles))
+        pairs = await asyncio.gather(*(process_article(a) for a in new_articles))
 
         posted_urls: List[str] = []
         posted_count: int = 0
-        for article, tweet_text in pairs:
-            if not tweet_text:
-                print(f"Skip (no summary): {article.title} — {article.url}")
+        for article, strategy in pairs:
+            if not strategy.content_parts:
+                print(f"Skip (no content): {article.title} — {article.url}")
                 continue
             if posted_count >= self.cfg.app.max_daily_posts:
                 break
-            result = publish_tweet(api, tweet_text, dry_run=cfg.app.dry_run)  # type: ignore[arg-type]
+            
+            # Post based on content strategy
+            if strategy.content_type == "thread":
+                result = publish_thread(api, strategy.content_parts, dry_run=cfg.app.dry_run)
+            elif strategy.content_type == "long":
+                result = publish_long_post(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)
+            elif strategy.content_type == "image" and strategy.use_image and strategy.image_prompt:
+                result = publish_with_image(api, strategy.content_parts[0], strategy.image_prompt, dry_run=cfg.app.dry_run)
+            else:
+                # Default to short tweet
+                result = publish_tweet(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)
+            
             if result.ok:
                 if not cfg.app.dry_run:
                     mark_posted(cfg.db_path, article.url, result.id)
                 posted_urls.append(article.url)
                 posted_count += 1
-                print(f"Posted: {article.title} — {article.url}")
+                
+                # Log posting details
+                if strategy.content_type == "thread":
+                    print(f"Posted thread ({len(strategy.content_parts)} parts): {article.title} — {article.url}")
+                elif strategy.content_type == "long":
+                    print(f"Posted long-form: {article.title} — {article.url}")
+                elif strategy.content_type == "image":
+                    print(f"Posted with image: {article.title} — {article.url}")
+                else:
+                    print(f"Posted: {article.title} — {article.url}")
             else:
                 print(f"Failed to post: {article.title} — {article.url} | error={result.error}")
 
