@@ -2,8 +2,10 @@ name: Aimylabs Scheduled Posts
 
 on:
   schedule:
-    # Runs at 09:00 and 15:00 UTC by default. Adjust to your desired UTC times.
-    - cron: "0 9,15 * * *"
+    # 08:00 and 20:00 PST (UTC-8, no DST adjustment). In UTC: 16:00 and 04:00 next day.
+    # Note: GitHub cron is UTC and does NOT auto-adjust for daylight saving time.
+    - cron: "0 16 * * *"  # 08:00 PST
+    - cron: "0 4 * * *"   # 20:00 PST
   workflow_dispatch: {}
 
 jobs:
