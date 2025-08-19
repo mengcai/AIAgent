@@ -1,0 +1,35 @@
+app:
+  timezone: local
+  dry_run: false
+  max_daily_posts: 1
+  post_times: ["09:00", "15:00"]
+
+style:
+  tone: witty
+  use_emojis: true
+  default_hashtags: ["#AI", "#Web3", "#AIAgent"]
+
+sources:
+  min_recency_hours: 24
+  rss_feeds:
+    - https://openai.com/blog/rss.xml
+    - https://www.deepmind.com/blog/rss.xml
+    - https://www.anthropic.com/news/rss.xml
+    - https://ai.googleblog.com/atom.xml
+    - https://www.technologyreview.com/feed/tag/artificial-intelligence/
+    - https://www.coindesk.com/arc/outboundfeeds/rss/
+    - https://feeds.feedburner.com/TheMerkle
+    - https://blog.chain.link/feed/
+    - https://a16z.com/feed/
+
+allowlist_domains:
+  - openai.com
+  - deepmind.com
+  - anthropic.com
+  - ai.googleblog.com
+  - technologyreview.com
+  - coindesk.com
+  - themerkle.com
+  - chain.link
+  - a16z.com
+
