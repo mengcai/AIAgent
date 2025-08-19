@@ -1,6 +1,6 @@
 ## Aimylabs — Premium AI + Web3 News-to-X Agent
 
-Aimylabs continuously monitors trusted AI and Web3 sources, distills key insights with an LLM, and automatically posts engaging content to your X (Twitter) Premium account. Now with **long-form posts (25,000 chars)**, **threads**, and **AI-generated images** via Grok!
+Aimylabs continuously monitors trusted AI and Web3 sources, distills key insights with an LLM, and automatically posts engaging content to your X (Twitter) Premium account. Now with **long-form posts (25,000 chars)**, **threads**, and **AI-generated images** via OpenAI DALL-E!
 
 ### Features
 - **News collection**: Monitor curated RSS feeds from credible AI and Web3 sources; filter by recency and domain allowlist.
@@ -8,7 +8,7 @@ Aimylabs continuously monitors trusted AI and Web3 sources, distills key insight
   - **Short tweets** (classic 280 chars)
   - **Long-form posts** (up to 25,000 chars for Premium X)
   - **Threads** for complex stories with multiple parts
-  - **Image-enhanced posts** with Grok-generated visuals
+  - **Image-enhanced posts** with OpenAI DALL-E generated visuals
 - **Smart content strategy**: Automatically choose the best format based on news importance
 - **Multiple tones**: Switch between witty, professional, thought-leader, hype, or meme styles
 - **Scheduling**: Post automatically at configured daily times using a lightweight scheduler.
@@ -41,8 +41,8 @@ Required env vars for posting to X (Twitter):
 Required env var for content generation (OpenAI; pluggable):
 - `OPENAI_API_KEY`
 
-Required env var for image generation (Grok):
-- `GROK_API_KEY`
+Required env var for image generation (OpenAI):
+- `OPENAI_IMAGE_MODEL` (default: dall-e-3)
 
 Optional:
 - `AIMYLABS_DB_PATH` — where to store the SQLite DB (default: `~/.aimylabs/aimylabs.db`).
@@ -75,7 +75,7 @@ app:
   use_premium_features: true  # Enable long posts, threads, images
   max_post_length: 25000   # Premium X character limit
   enable_threads: true     # Post threads for complex stories
-  enable_images: true      # Generate images with Grok
+  enable_images: true      # Generate images with OpenAI DALL-E
 
 style:
   tone: professional       # professional | witty | hype | meme | thought_leader

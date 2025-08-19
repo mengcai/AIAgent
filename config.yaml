@@ -6,7 +6,7 @@ app:
   use_premium_features: true
   max_post_length: 25000
   enable_threads: true
-  enable_images: true
+  enable_images: true  # Uses OpenAI DALL-E for image generation
 
 style:
   tone: witty

@@ -35,8 +35,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MODEL: gpt-4o
-          GROK_API_KEY: ${{ secrets.GROK_API_KEY }}
-          GROK_MODEL: grok-beta
+          OPENAI_IMAGE_MODEL: dall-e-3
           X_CONSUMER_KEY: ${{ secrets.X_CONSUMER_KEY }}
           X_CONSUMER_SECRET: ${{ secrets.X_CONSUMER_SECRET }}
           X_ACCESS_TOKEN: ${{ secrets.X_ACCESS_TOKEN }}

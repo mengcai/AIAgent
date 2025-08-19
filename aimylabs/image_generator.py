@@ -18,61 +18,63 @@ class ImageGenerationResult:
     error: Optional[str] = None
 
 
-async def generate_grok_image(
+async def generate_openai_image(
     prompt: str,
-    grok_api_key: str,
-    grok_model: str = "grok-beta",
+    openai_api_key: str,
+    openai_image_model: str = "dall-e-3",
     style: str = "realistic",
     aspect_ratio: str = "1:1"
 ) -> ImageGenerationResult:
     """
-    Generate an image using Grok's image generation API.
+    Generate an image using OpenAI's DALL-E API.
     
     Args:
         prompt: Text description of the image to generate
-        grok_api_key: Grok API key
-        grok_model: Grok model to use
+        openai_api_key: OpenAI API key
+        openai_image_model: OpenAI image model to use (dall-e-2, dall-e-3)
         style: Image style (realistic, artistic, cartoon, etc.)
         aspect_ratio: Image aspect ratio (1:1, 16:9, etc.)
     
     Returns:
         ImageGenerationResult with success status and image data
     """
-    if not grok_api_key or not grok_api_key.strip():
-        return ImageGenerationResult(success=False, error="No Grok API key provided")
+    if not openai_api_key or not openai_api_key.strip():
+        return ImageGenerationResult(success=False, error="No OpenAI API key provided")
     
     # Enhanced prompt for better image generation
     enhanced_prompt = f"Create a {style} image: {prompt}. Style: professional, high-quality, relevant to AI/Web3 technology news. Make it eye-catching and shareable on social media."
     
     headers = {
-        "Authorization": f"Bearer {grok_api_key}",
-        "Content-Type": "application/json",
-        "User-Agent": "Aimylabs-Agent/1.0"
+        "Authorization": f"Bearer {openai_api_key}",
+        "Content-Type": "application/json"
+    }
+    
+    # Map aspect ratio to DALL-E size
+    size_mapping = {
+        "1:1": "1024x1024",
+        "16:9": "1792x1024",
+        "9:16": "1024x1792"
     }
     
     body = {
-        "model": grok_model,
+        "model": openai_image_model,
         "prompt": enhanced_prompt,
         "n": 1,
-        "size": "1024x1024",  # High quality for Premium X
-        "style": style,
-        "aspect_ratio": aspect_ratio,
-        "quality": "hd"
+        "size": size_mapping.get(aspect_ratio, "1024x1024"),
+        "quality": "hd" if openai_image_model == "dall-e-3" else "standard"
     }
     
     try:
         async with httpx.AsyncClient(timeout=60) as client:
-            # Note: Replace with actual Grok image generation endpoint
-            # This is a placeholder - you'll need the real Grok API endpoint
             resp = await client.post(
-                "https://api.grok.x.ai/v1/images/generations",  # Placeholder URL
+                "https://api.openai.com/v1/images/generations",
                 headers=headers,
                 json=body
             )
             
             if resp.status_code == 200:
                 data = resp.json()
-                # Extract image URL or data based on Grok's response format
+                # Extract image URL from OpenAI's response
                 if "data" in data and len(data["data"]) > 0:
                     image_data = data["data"][0]
                     image_url = image_data.get("url")
@@ -91,7 +93,7 @@ async def generate_grok_image(
             else:
                 return ImageGenerationResult(
                     success=False, 
-                    error=f"Grok API error: {resp.status_code} - {resp.text}"
+                    error=f"OpenAI API error: {resp.status_code} - {resp.text}"
                 )
                 
     except Exception as e:
@@ -151,8 +153,8 @@ async def generate_news_image(
     title: str,
     content: str,
     tone: str,
-    grok_api_key: str,
-    grok_model: str = "grok-beta"
+    openai_api_key: str,
+    openai_image_model: str = "dall-e-3"
 ) -> ImageGenerationResult:
     """
     Generate an image specifically for news content.
@@ -161,8 +163,8 @@ async def generate_news_image(
         title: News article title
         content: Article content summary
         tone: Desired tone
-        grok_api_key: Grok API key
-        grok_model: Grok model to use
+        openai_api_key: OpenAI API key
+        openai_image_model: OpenAI image model to use
     
     Returns:
         ImageGenerationResult with generated image
@@ -172,10 +174,10 @@ async def generate_news_image(
     # Choose aspect ratio based on content type
     aspect_ratio = "16:9" if len(content) > 500 else "1:1"
     
-    return await generate_grok_image(
+    return await generate_openai_image(
         prompt=prompt,
-        grok_api_key=grok_api_key,
-        grok_model=grok_model,
+        openai_api_key=openai_api_key,
+        openai_image_model=openai_image_model,
         style="realistic",
         aspect_ratio=aspect_ratio
     )

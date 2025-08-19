@@ -68,14 +68,14 @@ class AimylabsAgent:
                 )
                 
                 # Generate content based on strategy
-                if strategy.content_type == "image" and cfg.app.enable_images and cfg.grok_api_key:
+                if strategy.content_type == "image" and cfg.app.enable_images and cfg.openai_api_key:
                     # Generate image
                     image_result = await generate_news_image(
                         title=a.title,
                         content=a.summary or "",
                         tone=cfg.style.tone,
-                        grok_api_key=cfg.grok_api_key,
-                        grok_model=cfg.grok_model
+                        openai_api_key=cfg.openai_api_key,
+                        openai_image_model=cfg.openai_image_model
                     )
                     strategy.use_image = image_result.success
                     if image_result.success:

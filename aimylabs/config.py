@@ -45,8 +45,7 @@ class Config:
 
     openai_api_key: Optional[str] = None
     openai_model: str = os.getenv("OPENAI_MODEL", "gpt-4o")
-    grok_api_key: Optional[str] = None  # For image generation
-    grok_model: str = os.getenv("GROK_MODEL", "grok-beta")
+    openai_image_model: str = os.getenv("OPENAI_IMAGE_MODEL", "dall-e-3")  # For image generation
 
     x_consumer_key: Optional[str] = None
     x_consumer_secret: Optional[str] = None
@@ -72,7 +71,6 @@ def load_config(path: str = "config.yaml") -> Config:
     )
 
     cfg.openai_api_key = os.getenv("OPENAI_API_KEY")
-    cfg.grok_api_key = os.getenv("GROK_API_KEY")
     cfg.x_consumer_key = os.getenv("X_CONSUMER_KEY")
     cfg.x_consumer_secret = os.getenv("X_CONSUMER_SECRET")
     cfg.x_access_token = os.getenv("X_ACCESS_TOKEN")
