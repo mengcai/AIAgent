@@ -8,6 +8,8 @@ style:
   tone: witty
   use_emojis: true
   default_hashtags: ["#AI", "#Web3", "#AIAgent"]
+  max_hashtags: 3
+  use_mentions: true
 
 sources:
   min_recency_hours: 24

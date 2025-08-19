@@ -25,8 +25,9 @@ def extract_readable(url: str) -> Optional[str]:
         return None
 
 
-def build_prompt(content: str, title: Optional[str], tone: str, use_emojis: bool, hashtags: List[str]) -> str:
+def build_prompt(content: str, title: Optional[str], tone: str, use_emojis: bool, hashtags: List[str], mentions: List[str]) -> str:
     hashtag_str = " ".join(hashtags) if hashtags else ""
+    mention_str = " ".join(mentions) if mentions else ""
     emoji_hint = "Include 0-2 tasteful emojis." if use_emojis else "Do not use emojis."
     tone_hint = {
         "professional": "Use a concise, professional tone.",
@@ -35,7 +36,8 @@ def build_prompt(content: str, title: Optional[str], tone: str, use_emojis: bool
     }.get(tone, "Use a concise, professional tone.")
 
     title_part = f"Title: {title}\n" if title else ""
-    hashtag_part = f"\nIf space allows, append: {hashtag_str}" if hashtag_str else ""
+    extras = " ".join(x for x in [hashtag_str, mention_str] if x).strip()
+    extra_part = f"\nIf space allows, append: {extras}" if extras else ""
 
     return (
         f"You are drafting a single X (Twitter) post based on the article below.\n"
@@ -44,7 +46,7 @@ def build_prompt(content: str, title: Optional[str], tone: str, use_emojis: bool
         f"Avoid hashtags in the middle of the sentence. Keep it human-like.\n"
         f"Start directly with the insight (no preamble).\n\n"
         f"{title_part}Content:\n{content}\n\n"
-        f"Output: one tweet-ready sentence ≤280 chars.{hashtag_part}"
+        f"Output: one tweet-ready sentence ≤280 chars.{extra_part}"
     )
 
 
@@ -55,6 +57,7 @@ async def summarize_to_tweet(
     tone: str,
     use_emojis: bool,
     hashtags: List[str],
+    mentions: List[str],
     openai_api_key: str,
     model: str,
 ) -> Optional[str]:
@@ -66,17 +69,18 @@ async def summarize_to_tweet(
     if not (openai_api_key and openai_api_key.strip()):
         base = (title or content or url).strip()
         suffix = f" {url}" if url else ""
-        hash_str = f" {' '.join(hashtags)}" if hashtags else ""
-        tweet = f"{base}{suffix}"
+        tag_str = " ".join([*hashtags, *mentions]).strip()
+        add_str = f" {tag_str}" if tag_str else ""
+        tweet = f"{base}{suffix}{add_str}"
         if len(tweet) + len(hash_str) <= 280:
-            return (tweet + hash_str)[:280]
+            return tweet[:280]
         # Trim base to fit URL and maybe hashtags
-        max_len = 280 - len(suffix)
+        max_len = 280 - len(suffix) - len(add_str)
         trimmed = (base[: max_len - 1] + "…") if len(base) > max_len else base
-        tweet = f"{trimmed}{suffix}"
+        tweet = f"{trimmed}{suffix}{add_str}"
         return tweet[:280]
 
-    prompt = build_prompt(content=content, title=title, tone=tone, use_emojis=use_emojis, hashtags=hashtags)
+    prompt = build_prompt(content=content, title=title, tone=tone, use_emojis=use_emojis, hashtags=hashtags, mentions=mentions)
 
     headers = {"Authorization": f"Bearer {openai_api_key}", "Content-Type": "application/json"}
     body = {

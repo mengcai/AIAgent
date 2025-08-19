@@ -8,6 +8,7 @@ from .config import Config
 from .publisher import create_x_client, publish_tweet
 from .storage import ensure_db, mark_posted, was_posted
 from .summarizer import summarize_to_tweet
+from .mentions import pick_mentions, mix_hashtags
 
 
 class AimylabsAgent:
@@ -47,12 +48,15 @@ class AimylabsAgent:
 
         async def summarize_article(a):
             async with sem:  # type: ignore[attr-defined]
+                hashtags = mix_hashtags(cfg.style.default_hashtags, cfg.style.max_hashtags)
+                mentions = pick_mentions(a.title + " " + (a.summary or "")) if cfg.style.use_mentions else []
                 text = await summarize_to_tweet(
                     url=a.url,
                     title=a.title,
                     tone=cfg.style.tone,
                     use_emojis=cfg.style.use_emojis,
-                    hashtags=cfg.style.default_hashtags,
+                    hashtags=hashtags,
+                    mentions=mentions,
                     openai_api_key=cfg.openai_api_key or "",
                     model=cfg.openai_model,
                 )

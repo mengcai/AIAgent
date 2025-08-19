@@ -20,6 +20,8 @@ class StyleConfig:
     tone: str = "professional"  # professional|witty|hype
     use_emojis: bool = True
     default_hashtags: List[str] = field(default_factory=lambda: ["#AI", "#Web3"])
+    max_hashtags: int = 2
+    use_mentions: bool = True
 
 
 @dataclass
