@@ -25,6 +25,22 @@ def extract_readable(url: str) -> Optional[str]:
         return None
 
 
+def _build_heuristic_tweet(*, url: str, title: Optional[str], content: str, hashtags: List[str], mentions: List[str]) -> str:
+    base = (title or content or url).strip()
+    suffix = f" {url}" if url else ""
+    tag_str = " ".join([*hashtags, *mentions]).strip()
+    add_str = f" {tag_str}" if tag_str else ""
+    tweet = f"{base}{suffix}{add_str}"
+    if len(tweet) <= 280:
+        return tweet
+    max_len = 280 - len(suffix) - len(add_str)
+    if max_len <= 0:
+        return (suffix + add_str).strip()[:280]
+    trimmed = (base[: max_len - 1] + "…") if len(base) > max_len and max_len > 1 else base[:max_len]
+    tweet = f"{trimmed}{suffix}{add_str}"
+    return tweet[:280]
+
+
 def build_prompt(content: str, title: Optional[str], tone: str, use_emojis: bool, hashtags: List[str], mentions: List[str]) -> str:
     hashtag_str = " ".join(hashtags) if hashtags else ""
     mention_str = " ".join(mentions) if mentions else ""
@@ -67,19 +83,7 @@ async def summarize_to_tweet(
 
     # Fallback if no API key: produce a heuristic tweet
     if not (openai_api_key and openai_api_key.strip()):
-        base = (title or content or url).strip()
-        suffix = f" {url}" if url else ""
-        tag_str = " ".join([*hashtags, *mentions]).strip()
-        add_str = f" {tag_str}" if tag_str else ""
-        tweet = f"{base}{suffix}{add_str}"
-        # Ensure within 280 chars; trim if necessary
-        if len(tweet) <= 280:
-            return tweet
-        # Trim base to fit URL and maybe hashtags
-        max_len = 280 - len(suffix) - len(add_str)
-        trimmed = (base[: max_len - 1] + "…") if len(base) > max_len else base
-        tweet = f"{trimmed}{suffix}{add_str}"
-        return tweet[:280]
+        return _build_heuristic_tweet(url=url, title=title, content=content or url, hashtags=hashtags, mentions=mentions)
 
     prompt = build_prompt(content=content, title=title, tone=tone, use_emojis=use_emojis, hashtags=hashtags, mentions=mentions)
 
@@ -103,6 +107,7 @@ async def summarize_to_tweet(
             # Ensure 280 chars max
             return text[:280]
         except Exception:
-            return None
+            # If the API call fails (e.g., invalid model/permissions), fall back to heuristic tweet
+            return _build_heuristic_tweet(url=url, title=title, content=content or url, hashtags=hashtags, mentions=mentions)
 
 
