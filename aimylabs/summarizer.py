@@ -72,8 +72,9 @@ async def summarize_to_tweet(
         tag_str = " ".join([*hashtags, *mentions]).strip()
         add_str = f" {tag_str}" if tag_str else ""
         tweet = f"{base}{suffix}{add_str}"
-        if len(tweet) + len(hash_str) <= 280:
-            return tweet[:280]
+        # Ensure within 280 chars; trim if necessary
+        if len(tweet) <= 280:
+            return tweet
         # Trim base to fit URL and maybe hashtags
         max_len = 280 - len(suffix) - len(add_str)
         trimmed = (base[: max_len - 1] + "…") if len(base) > max_len else base
