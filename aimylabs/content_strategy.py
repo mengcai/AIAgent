@@ -966,19 +966,58 @@ def _add_viral_elements(title: str, content: str, story_angle: str) -> str:
     # Add viral closing statements
     viral_closing = _get_viral_closing(story_angle)
     
+    # Add visual preview hint for engagement
+    preview_hint = _get_preview_hint(title, content)
+    
     # Combine all viral elements
     viral_section = ""
     
     if strategic_mentions:
-        viral_section += f"👥 Tagging the key players: {strategic_mentions}\n\n"
+        viral_section += f"👥 {strategic_mentions}\n\n"
     
     if key_hashtags:
-        viral_section += f"🏷️ Trending: {key_hashtags}\n\n"
+        viral_section += f"🏷️ {key_hashtags}\n\n"
+    
+    if preview_hint:
+        viral_section += f"📸 {preview_hint}\n\n"
     
     if viral_closing:
         viral_section += f"💭 {viral_closing}\n\n"
     
     return viral_section
+
+
+def _get_preview_hint(title: str, content: str) -> str:
+    """Add a hint about what visual content readers can expect from the link."""
+    
+    preview_hints = [
+        "Link preview includes charts and data visualizations 📊",
+        "Full breakdown with infographics in the article 📈", 
+        "Visual timeline and key metrics included 📋",
+        "Article features detailed analysis and charts 🗂️",
+        "Check out the visual breakdown in the full story 🎯",
+        "Comprehensive data and insights at the link 📋"
+    ]
+    
+    # For crypto/finance stories, emphasize data
+    if any(word in (title + content).lower() for word in ["price", "market", "trading", "investment", "funding"]):
+        finance_hints = [
+            "Price charts and market analysis in full article 📊",
+            "Trading data and market metrics at the link 📈",
+            "Investment breakdown with visual data 💹"
+        ]
+        return random.choice(finance_hints)
+    
+    # For tech stories, emphasize innovation visuals
+    elif any(word in (title + content).lower() for word in ["launch", "product", "demo", "technology"]):
+        tech_hints = [
+            "Product demos and screenshots in the article 📱",
+            "Tech breakdown with visual examples 💻",
+            "Innovation showcase with detailed visuals 🔧"
+        ]
+        return random.choice(tech_hints)
+    
+    return random.choice(preview_hints)
 
 
 def _get_strategic_mentions(story_angle: str, title: str, content: str) -> str:
@@ -1158,59 +1197,137 @@ def _extract_key_points(content: str) -> List[str]:
 
 
 def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> str:
-    """Format content in thought leader style."""
-    content = f"💭 {title}\n\n"
-    content += "This development caught my attention for several reasons:\n\n"
+    """Format content in thought leader style - natural and personal."""
     
-    for i, point in enumerate(key_points, 1):
-        content += f"{i}. {point}\n\n"
+    # Personal, thoughtful openings
+    thoughtful_openings = [
+        "I've been reflecting on this development, and there's more here than meets the eye.",
+        "This story has me thinking about the bigger picture. Let me share why:",
+        "Sometimes a single announcement reveals much larger trends. This is one of those times.",
+        "I keep coming back to this news because it signals something important:",
+        "After diving deep into this, I think there are some key insights worth sharing:",
+        "This caught my eye not just for what it is, but for what it represents:",
+        "Been analyzing this from multiple angles. Here's what stands out to me:"
+    ]
     
-    content += "The implications are profound. We're witnessing the acceleration of technological convergence that will define the next decade.\n\n"
-    content += "What are your thoughts on this? How do you see it impacting your work?\n\n"
+    content = f"{random.choice(thoughtful_openings)}\n\n"
+    
+    # Add insights in a personal, analytical way
+    if len(key_points) > 0:
+        content += "Key observations:\n\n"
+        for i, point in enumerate(key_points, 1):
+            content += f"→ {point}\n\n"
+    
+    # Personal reflection and broader implications
+    reflective_conclusions = [
+        "Looking ahead, I think this represents a fundamental shift in how we approach innovation.",
+        "The strategic implications here are significant, and I suspect we'll see more moves like this.",
+        "What excites me most is how this could accelerate progress across the entire ecosystem.",
+        "This feels like one of those moments we'll look back on as a turning point.",
+        "The convergence happening here is exactly what I've been anticipating.",
+        "From a strategic perspective, this timing couldn't be more telling."
+    ]
+    
+    content += random.choice(reflective_conclusions) + "\n\n"
+    content += "What's your take? I'd love to hear different perspectives on this.\n\n"
     
     # Add viral elements for maximum engagement
     viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"🔗 {url}"
+    content += f"Source: {url}"
     
     return content
 
 
 def _format_professional_post(title: str, key_points: List[str], url: str) -> str:
-    """Format content in professional style."""
-    content = f"📊 {title}\n\n"
-    content += "Key highlights:\n\n"
+    """Format content in professional style - natural and personal."""
     
-    for i, point in enumerate(key_points, 1):
-        content += f"• {point}\n"
+    # Professional but personal openings
+    professional_openings = [
+        "Sharing some insights on this important development:",
+        "Worth taking a closer look at this announcement. Here's why:",
+        "This deserves attention from anyone following the space:",
+        "Breaking down what this means for the industry:",
+        "Some key takeaways from today's news:",
+        "This caught my attention as a significant development:",
+        "Quick analysis on what just happened in the market:"
+    ]
     
-    content += "\nThis represents a significant advancement in the field.\n\n"
+    content = f"{random.choice(professional_openings)}\n\n"
+    
+    # Add insights in a professional but conversational way
+    if len(key_points) > 0:
+        content += "Key points to consider:\n\n"
+        for i, point in enumerate(key_points, 1):
+            content += f"✓ {point}\n"
+        content += "\n"
+    
+    # Professional but personal conclusion
+    professional_conclusions = [
+        "The market implications are worth monitoring closely.",
+        "This aligns with broader trends I've been tracking in the space.",
+        "Interesting to see how this plays out over the coming months.",
+        "Another piece of the puzzle falling into place.",
+        "The timing here suggests more developments ahead.",
+        "Worth keeping this on your radar if you're in the space."
+    ]
+    
+    content += random.choice(professional_conclusions) + "\n\n"
     
     # Add viral elements for maximum engagement
     viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"Read more: {url}"
+    content += f"Details: {url}"
     
     return content
 
 
 def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
-    """Format content in witty style."""
-    content = f"🤖 {title}\n\n"
-    content += "Plot twist: The future is happening faster than expected! Here's what's going down:\n\n"
+    """Format content in witty style - natural and personal."""
     
-    for i, point in enumerate(key_points, 1):
-        content += f"{i}. {point}\n"
+    # Create natural, personal openings
+    personal_openings = [
+        "Just saw this and had to share my thoughts...",
+        "Okay, this caught my attention and I need to break it down:",
+        "Been thinking about this all morning. Here's why it matters:",
+        "This popped up on my feed and honestly? Mind blown.",
+        "Hot take incoming on this news:",
+        "Diving deep into this because the implications are wild:",
+        "Can we talk about this for a second? Because wow.",
+        "Reading between the lines here, and here's what I see:"
+    ]
     
-    content += "\nThe AI/Web3 crossover we've been waiting for? It's here, and it's spectacular.\n\n"
+    opening = random.choice(personal_openings)
+    content = f"{opening}\n\n"
+    
+    # Add the main insights in a conversational way
+    if len(key_points) > 0:
+        content += "Here's what's really happening:\n\n"
+        for i, point in enumerate(key_points, 1):
+            content += f"• {point}\n"
+        content += "\n"
+    
+    # Personal take/conclusion
+    personal_conclusions = [
+        "My take? This is bigger than it looks. The ripple effects are going to be interesting.",
+        "Honestly, I think we're seeing the early stages of something massive here.",
+        "The more I think about it, the more convinced I am this changes everything.",
+        "Not gonna lie, this has me excited about what comes next.",
+        "This is exactly the kind of innovation that keeps me up at night (in a good way).",
+        "Call me optimistic, but I think this is just the beginning.",
+        "The timing on this couldn't be more perfect. Here's why:"
+    ]
+    
+    content += random.choice(personal_conclusions) + "\n\n"
     
     # Add viral elements for maximum engagement
     viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"🎬 {url}"
+    # Add URL with natural introduction
+    content += f"Full story: {url}"
     
     return content
 
