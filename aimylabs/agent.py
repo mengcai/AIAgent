@@ -9,7 +9,7 @@ from .publisher import create_x_client, publish_tweet, publish_thread, publish_l
 from .storage import ensure_db, mark_posted, was_posted
 from .summarizer import summarize_to_tweet
 from .content_strategy import determine_content_strategy
-from .image_generator import generate_news_image
+from .image_generator import generate_news_image, generate_openai_image
 
 
 class AimylabsAgent:
@@ -69,14 +69,13 @@ class AimylabsAgent:
                 
                 # Generate content based on strategy
                 if strategy.content_type == "image" and cfg.app.enable_images and cfg.openai_api_key:
-                    # Generate image
-                    image_result = await generate_news_image(
-                        title=a.title,
-                        content=a.summary or "",
-                        tone=cfg.style.tone,
+                    # Generate image using the prompt from the strategy
+                    image_result = await generate_openai_image(
+                        prompt=strategy.image_prompt,
                         openai_api_key=cfg.openai_api_key,
                         openai_image_model=cfg.openai_image_model
                     )
+                    
                     strategy.use_image = image_result.success
                     if image_result.success:
                         strategy.image_prompt = image_result.image_data
@@ -100,6 +99,10 @@ class AimylabsAgent:
             elif strategy.content_type == "long":
                 result = publish_long_post(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)
             elif strategy.content_type == "image" and strategy.use_image and strategy.image_prompt:
+                print(f"\n🎨 IMAGE POST CONTENT:")
+                print(f"Content: {strategy.content_parts[0]}")
+                print(f"Image prompt: {strategy.image_prompt}")
+                print("---")
                 result = publish_with_image(api, strategy.content_parts[0], strategy.image_prompt, dry_run=cfg.app.dry_run)
             else:
                 # Default to short tweet
