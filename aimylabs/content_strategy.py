@@ -115,7 +115,7 @@ def _create_short_post_strategy(
     mentions = pick_mentions(title + " " + content)
     
     # Create a bold, engaging statement that's NOT just the headline
-    post_content = _create_engaging_short_post(title, content, tone)
+    post_content = _create_engaging_short_post(title, content, tone, url)
     
     return ContentStrategy(
         content_type="short",
@@ -219,7 +219,7 @@ def _create_image_strategy(
     )
 
 
-def _create_engaging_short_post(title: str, content: str, tone: str) -> str:
+def _create_engaging_short_post(title: str, content: str, tone: str, url: str = "") -> str:
     """Create a short post that's engaging and original, not just a headline copy."""
     
     # Extract the real story beyond the headline
@@ -227,15 +227,27 @@ def _create_engaging_short_post(title: str, content: str, tone: str) -> str:
     
     # Create a bold POV statement
     if tone == "witty":
-        return _create_witty_short_post(story_angle, title)
+        post = _create_witty_short_post(story_angle, title)
     elif tone == "hype":
-        return _create_hype_short_post(story_angle, title)
+        post = _create_hype_short_post(story_angle, title)
     elif tone == "thought_leader":
-        return _create_thought_leader_short_post(story_angle, title)
+        post = _create_thought_leader_short_post(story_angle, title)
     elif tone == "meme":
-        return _create_meme_short_post(story_angle, title)
+        post = _create_meme_short_post(story_angle, title)
     else:
-        return _create_professional_short_post(story_angle, title)
+        post = _create_professional_short_post(story_angle, title)
+    
+    # Add viral elements for maximum engagement
+    viral_elements = _add_viral_elements(title, content, story_angle)
+    
+    # Add URL if provided
+    if url:
+        post += f"\n\n🔗 {url}"
+    
+    # Add viral elements
+    post += f"\n\n{viral_elements}"
+    
+    return post
 
 
 def _extract_story_angle(title: str, content: str) -> str:
@@ -593,10 +605,13 @@ def _create_engaging_image_post(title: str, content: str, tone: str, url: str) -
     # Add engaging middle content
     middle = _create_image_post_middle(story_angle, content)
     
+    # Add strategic mentions and hashtags for virality
+    viral_elements = _add_viral_elements(title, content, story_angle)
+    
     # Add URL and hashtags
     closing = f"\n\n🔗 {url}"
     
-    return f"{opening}\n\n{middle}{closing}"
+    return f"{opening}\n\n{middle}\n\n{viral_elements}{closing}"
 
 
 def _create_witty_image_opening(story_angle: str, title: str) -> str:
@@ -939,6 +954,133 @@ def _create_image_post_middle(story_angle: str, content: str) -> str:
     return middle
 
 
+def _add_viral_elements(title: str, content: str, story_angle: str) -> str:
+    """Add strategic mentions, hashtags, and viral elements for maximum engagement."""
+    
+    # Strategic mentions based on story angle
+    strategic_mentions = _get_strategic_mentions(story_angle, title, content)
+    
+    # Extract and hashtag key keywords
+    key_hashtags = _extract_key_hashtags(title, content)
+    
+    # Add viral closing statements
+    viral_closing = _get_viral_closing(story_angle)
+    
+    # Combine all viral elements
+    viral_section = ""
+    
+    if strategic_mentions:
+        viral_section += f"👥 Tagging the key players: {strategic_mentions}\n\n"
+    
+    if key_hashtags:
+        viral_section += f"🏷️ Trending: {key_hashtags}\n\n"
+    
+    if viral_closing:
+        viral_section += f"💭 {viral_closing}\n\n"
+    
+    return viral_section
+
+
+def _get_strategic_mentions(story_angle: str, title: str, content: str) -> str:
+    """Get strategic mentions for maximum visibility and virality."""
+    
+    # Company/entity mentions
+    company_mentions = {
+        "openai": "@OpenAI @sama",
+        "google": "@Google @sundarpichai",
+        "microsoft": "@Microsoft @satyanadella",
+        "anthropic": "@AnthropicAI @dario_amodei",
+        "deepmind": "@DeepMind @demishassabis",
+        "ethereum": "@ethereum @VitalikButerin",
+        "bitcoin": "@Bitcoin @SBF_FTX",
+        "a16z": "@a16z @marcandreessen",
+        "sequoia": "@sequoia @michael_moritz",
+        "ycombinator": "@ycombinator @paulg"
+    }
+    
+    # Story-specific mentions
+    story_mentions = {
+        "regulatory_breakthrough": "@SECGov @GaryGensler @WhiteHouse",
+        "business_move": "@elonmusk @cz_binance @SBF_FTX",
+        "product_launch": "@OpenAI @GoogleAI @Microsoft",
+        "financial_news": "@CNBC @Bloomberg @WSJ",
+        "technical_breakthrough": "@MIT @Stanford @Berkeley"
+    }
+    
+    # Check for company mentions in title/content
+    mentions = []
+    for company, handle in company_mentions.items():
+        if company.lower() in (title + " " + content).lower():
+            mentions.append(handle)
+    
+    # Add story-specific mentions
+    if story_angle in story_mentions:
+        mentions.append(story_mentions[story_angle])
+    
+    # Add trending mentions
+    trending_mentions = ["@balajis", "@naval", "@pmarca", "@elonmusk", "@VitalikButerin"]
+    mentions.extend(trending_mentions[:2])  # Limit to 2 trending mentions
+    
+    return " ".join(mentions[:4])  # Limit total mentions
+
+
+def _extract_key_hashtags(title: str, content: str) -> str:
+    """Extract and hashtag key keywords for maximum visibility."""
+    
+    # Core technology hashtags
+    core_hashtags = ["#AI", "#Web3", "#DeFi", "#Crypto", "#Blockchain"]
+    
+    # Story-specific hashtags
+    story_hashtags = {
+        "regulatory_breakthrough": ["#Regulation", "#Compliance", "#Innovation"],
+        "business_move": ["#Business", "#Strategy", "#Partnership"],
+        "product_launch": ["#ProductLaunch", "#Innovation", "#Technology"],
+        "financial_news": ["#Finance", "#Investment", "#Markets"],
+        "technical_breakthrough": ["#Tech", "#Innovation", "#Breakthrough"],
+        "competitive_dynamics": ["#Competition", "#Strategy", "#Market"],
+        "general_development": ["#Innovation", "#Future", "#Technology"]
+    }
+    
+    # Extract keywords from title/content
+    text = (title + " " + content).lower()
+    keyword_hashtags = []
+    
+    # Technology keywords
+    tech_keywords = {
+        "ai": "#AI", "artificial intelligence": "#AI", "machine learning": "#ML",
+        "ethereum": "#Ethereum", "bitcoin": "#Bitcoin", "blockchain": "#Blockchain",
+        "defi": "#DeFi", "nft": "#NFT", "dao": "#DAO", "web3": "#Web3",
+        "funding": "#Funding", "investment": "#Investment", "startup": "#Startup",
+        "partnership": "#Partnership", "acquisition": "#Acquisition"
+    }
+    
+    for keyword, hashtag in tech_keywords.items():
+        if keyword in text and hashtag not in keyword_hashtags:
+            keyword_hashtags.append(hashtag)
+    
+    # Combine all hashtags
+    all_hashtags = core_hashtags + keyword_hashtags
+    
+    # Limit to 8 hashtags for optimal engagement
+    return " ".join(all_hashtags[:8])
+
+
+def _get_viral_closing(story_angle: str) -> str:
+    """Get viral closing statements to boost engagement."""
+    
+    viral_closings = {
+        "regulatory_breakthrough": "The future of regulation is being written right now. What's your take? 🤔",
+        "business_move": "Who's next to make a power move? The chess game continues... ♟️",
+        "product_launch": "Will this change everything, or just our Twitter feeds? The jury's out! 🧑‍⚖️",
+        "financial_news": "Money talks, but what is it saying? The plot thickens... 📊",
+        "technical_breakthrough": "Humanity just leveled up. What's the next breakthrough? 🔮",
+        "competitive_dynamics": "The race is on! Who's leading the innovation charge? 🏃‍♂️",
+        "general_development": "The future is unfolding before our eyes. Are you ready? ✨"
+    }
+    
+    return viral_closings.get(story_angle, "The future is now. What's next? 🚀")
+
+
 def _format_long_content(title: str, content: str, url: str, tone: str) -> str:
     """Format content for long-form posts."""
     # Extract key insights
@@ -1025,6 +1167,11 @@ def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> 
     
     content += "The implications are profound. We're witnessing the acceleration of technological convergence that will define the next decade.\n\n"
     content += "What are your thoughts on this? How do you see it impacting your work?\n\n"
+    
+    # Add viral elements for maximum engagement
+    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    content += viral_elements
+    
     content += f"🔗 {url}"
     
     return content
@@ -1038,7 +1185,13 @@ def _format_professional_post(title: str, key_points: List[str], url: str) -> st
     for i, point in enumerate(key_points, 1):
         content += f"• {point}\n"
     
-    content += f"\nThis represents a significant advancement in the field. Read more: {url}"
+    content += "\nThis represents a significant advancement in the field.\n\n"
+    
+    # Add viral elements for maximum engagement
+    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    content += viral_elements
+    
+    content += f"Read more: {url}"
     
     return content
 
@@ -1052,6 +1205,11 @@ def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
         content += f"{i}. {point}\n"
     
     content += "\nThe AI/Web3 crossover we've been waiting for? It's here, and it's spectacular.\n\n"
+    
+    # Add viral elements for maximum engagement
+    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    content += viral_elements
+    
     content += f"🎬 {url}"
     
     return content
@@ -1066,6 +1224,11 @@ def _format_hype_post(title: str, key_points: List[str], url: str) -> str:
         content += f"💥 {point}\n"
     
     content += "\nThe game is changing, and we're here for it! This is what innovation looks like.\n\n"
+    
+    # Add viral elements for maximum engagement
+    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    content += viral_elements
+    
     content += f"⚡ {url}"
     
     return content
@@ -1079,6 +1242,12 @@ def _format_default_post(title: str, key_points: List[str], url: str) -> str:
     for i, point in enumerate(key_points, 1):
         content += f"{i}. {point}\n"
     
-    content += f"\nRead the full story: {url}"
+    content += "\n"
+    
+    # Add viral elements for maximum engagement
+    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    content += viral_elements
+    
+    content += f"Read the full story: {url}"
     
     return content
