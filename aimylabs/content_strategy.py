@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import random
 from dataclasses import dataclass
 from typing import List, Optional
 
@@ -27,22 +28,7 @@ def determine_content_strategy(
     enable_threads: bool = True,
     enable_images: bool = True
 ) -> ContentStrategy:
-    """
-    Determine the best content strategy based on news importance and user preferences.
-    
-    Args:
-        title: News article title
-        content: Article content summary
-        url: Article URL
-        tone: Desired tone
-        config_strategy: User's preferred strategy (auto, short, long, thread, image)
-        max_length: Maximum post length (Premium X: 25000)
-        enable_threads: Whether threads are enabled
-        enable_images: Whether images are enabled
-    
-    Returns:
-        ContentStrategy with content type and parts
-    """
+    """Determine the best content strategy based on news importance and user preferences."""
     
     # Calculate content importance score
     importance_score = _calculate_importance_score(title, content)
@@ -124,13 +110,16 @@ def _create_short_post_strategy(
     url: str,
     tone: str
 ) -> ContentStrategy:
-    """Create a short tweet strategy (classic 280 chars)."""
-    hashtags = mix_hashtags(["#AI", "#Web3"], 3)
+    """Create a short tweet strategy with personality and insight."""
+    hashtags = mix_hashtags(["#AI", "#Web3", "#DeFi", "#Crypto"], 3)
     mentions = pick_mentions(title + " " + content)
+    
+    # Create a bold, engaging statement that's NOT just the headline
+    post_content = _create_engaging_short_post(title, content, tone)
     
     return ContentStrategy(
         content_type="short",
-        content_parts=[f"{title} {url}"],
+        content_parts=[post_content],
         hashtags=hashtags,
         mentions=mentions,
         use_image=False
@@ -225,6 +214,359 @@ def _create_image_strategy(
         use_image=True,
         image_prompt=image_prompt
     )
+
+
+def _create_engaging_short_post(title: str, content: str, tone: str) -> str:
+    """Create a short post that's engaging and original, not just a headline copy."""
+    
+    # Extract the real story beyond the headline
+    story_angle = _extract_story_angle(title, content)
+    
+    # Create a bold POV statement
+    if tone == "witty":
+        return _create_witty_short_post(story_angle, title)
+    elif tone == "hype":
+        return _create_hype_short_post(story_angle, title)
+    elif tone == "thought_leader":
+        return _create_thought_leader_short_post(story_angle, title)
+    elif tone == "meme":
+        return _create_meme_short_post(story_angle, title)
+    else:
+        return _create_professional_short_post(story_angle, title)
+
+
+def _extract_story_angle(title: str, content: str) -> str:
+    """Extract the real story angle beyond the headline."""
+    
+    # Look for key themes and implications
+    text = (title + " " + content).lower()
+    
+    if any(word in text for word in ["etf", "approval", "regulatory"]):
+        return "regulatory_breakthrough"
+    elif any(word in text for word in ["partnership", "acquisition", "merger"]):
+        return "business_move"
+    elif any(word in text for word in ["launch", "release", "announcement"]):
+        return "product_launch"
+    elif any(word in text for word in ["funding", "investment", "valuation"]):
+        return "financial_news"
+    elif any(word in text for word in ["breakthrough", "innovation", "research"]):
+        return "technical_breakthrough"
+    elif any(word in text for word in ["competition", "rival", "challenge"]):
+        return "competitive_dynamics"
+    else:
+        return "general_development"
+
+
+def _create_witty_short_post(story_angle: str, title: str) -> str:
+    """Create a witty, clever short post."""
+    
+    witty_takes = {
+        "regulatory_breakthrough": [
+            "🚨 Wall Street just gave this its 'gold stamp of approval' 🏦💎",
+            "🎯 The regulators finally caught up with reality",
+            "⚡️ This just got the government's blessing (and we all know what that means 😏)"
+        ],
+        "business_move": [
+            "🤝 Plot twist: The industry just got a lot more interesting",
+            "🎬 The corporate chess game continues...",
+            "💼 Someone's playing 4D chess while we're playing checkers"
+        ],
+        "product_launch": [
+            "🚀 Another day, another 'revolutionary' launch",
+            "🎉 The future is here (again, for the 47th time this month)",
+            "⚡️ Innovation speed: 0 to 100 real quick"
+        ],
+        "financial_news": [
+            "💰 Money talks, and it's saying some interesting things",
+            "📈 The numbers don't lie (but they do tell stories)",
+            "💎 Someone's making moves while we're making memes"
+        ],
+        "technical_breakthrough": [
+            "🧠 The AI just got smarter (and we're still trying to figure out our phones)",
+            "⚡️ Technology: Moving faster than our ability to understand it",
+            "🔮 The future is now, and it's wearing a neural network"
+        ],
+        "competitive_dynamics": [
+            "🥊 The gloves are off in the tech world",
+            "🎯 Someone's playing to win, not just to participate",
+            "⚔️ The battle for supremacy continues..."
+        ],
+        "general_development": [
+            "🎯 Another piece of the puzzle falls into place",
+            "🚀 Progress doesn't wait for permission",
+            "💡 Innovation happens whether we're ready or not"
+        ]
+    }
+    
+    # Pick a random witty take
+    take = random.choice(witty_takes.get(story_angle, witty_takes["general_development"]))
+    
+    # Create the post with personality
+    post = f"{take}\n\n"
+    
+    # Add a clever question or statement
+    if story_angle == "regulatory_breakthrough":
+        post += "The question isn't 'if' anymore, it's 'how fast' 🏃‍♂️💨"
+    elif story_angle == "business_move":
+        post += "Who's next on the chessboard? 🤔♟️"
+    elif story_angle == "product_launch":
+        post += "Will this one actually change the world, or just our Twitter feeds? 🌍📱"
+    elif story_angle == "financial_news":
+        post += "The market giveth, and the market taketh away 📊"
+    elif story_angle == "technical_breakthrough":
+        post += "Humanity: Still trying to keep up with our own creations 🤖"
+    else:
+        post += "The plot thickens... 🕵️‍♂️"
+    
+    return post
+
+
+def _create_hype_short_post(story_angle: str, title: str) -> str:
+    """Create a high-energy, hype short post."""
+    
+    hype_takes = {
+        "regulatory_breakthrough": [
+            "🔥 THIS IS HUGE! The game just changed forever! 🚀",
+            "⚡️ BREAKING: The future just got the green light! 🎯",
+            "🚨 MASSIVE NEWS: The revolution is officially sanctioned! 💥"
+        ],
+        "business_move": [
+            "💥 BOOM! The industry landscape just shifted! 🌋",
+            "🚀 GAME ON! Someone's making power moves! ⚡️",
+            "🔥 THE HEAT IS ON! Things are getting spicy! 🌶️"
+        ],
+        "product_launch": [
+            "🚀 THE FUTURE IS HERE! Innovation at warp speed! ⚡️",
+            "💥 REVOLUTIONARY! This changes everything! 🔥",
+            "⚡️ LIGHTNING STRIKE! The tech world just got upgraded! 🌩️"
+        ],
+        "financial_news": [
+            "💰 MONEY MOVES! The financial world is watching! 👀",
+            "📈 TO THE MOON! The numbers are speaking! 🚀",
+            "💎 DIAMOND HANDS! The market is responding! 💪"
+        ],
+        "technical_breakthrough": [
+            "🧠 MIND-BLOWING! The AI just leveled up! 🚀",
+            "⚡️ BREAKTHROUGH! Technology is evolving! 🔥",
+            "🔮 FUTURISTIC! We're living in the future! 🌟"
+        ],
+        "competitive_dynamics": [
+            "🥊 THE BATTLE IS ON! Competition is heating up! 🔥",
+            "⚔️ WAR GAMES! The stakes just got higher! 🎯",
+            "🚀 RACE TO THE TOP! Innovation is accelerating! ⚡️"
+        ],
+        "general_development": [
+            "🎯 TARGET ACQUIRED! Progress is unstoppable! 🚀",
+            "⚡️ LIGHTNING SPEED! The future is now! 🔥",
+            "💥 EXPLOSIVE GROWTH! Innovation is everywhere! 🌟"
+        ]
+    }
+    
+    take = random.choice(hype_takes.get(story_angle, hype_takes["general_development"]))
+    
+    post = f"{take}\n\n"
+    
+    # Add hype question
+    if story_angle == "regulatory_breakthrough":
+        post += "Are you ready for what's coming? Because it's COMING! 🚀💥"
+    elif story_angle == "business_move":
+        post += "The competition just got REAL! 💪🔥"
+    elif story_angle == "product_launch":
+        post += "This isn't just an update, it's a REVOLUTION! 🌟⚡️"
+    elif story_angle == "financial_news":
+        post += "The money is flowing! 💰💎"
+    elif story_angle == "technical_breakthrough":
+        post += "Humanity just got an upgrade! 🚀🧠"
+    else:
+        post += "The future is BRIGHT! ✨🔥"
+    
+    return post
+
+
+def _create_thought_leader_short_post(story_angle: str, title: str) -> str:
+    """Create a thought leader style short post."""
+    
+    thought_leader_takes = {
+        "regulatory_breakthrough": [
+            "💭 This regulatory milestone represents more than just approval—it's validation of an entire ecosystem.",
+            "🎯 The institutional embrace of this technology signals a fundamental shift in how we think about innovation.",
+            "⚡️ This moment will be remembered as the day the old guard finally acknowledged the new reality."
+        ],
+        "business_move": [
+            "💼 This strategic move reveals the underlying dynamics reshaping our industry.",
+            "🎯 The consolidation we're seeing isn't just business—it's evolution in action.",
+            "💡 This partnership represents the convergence of complementary visions for the future."
+        ],
+        "product_launch": [
+            "🚀 This launch isn't just a product—it's a platform for the next generation of innovation.",
+            "💡 What we're seeing here is the maturation of technology from novelty to necessity.",
+            "⚡️ This represents the bridge between current capabilities and future possibilities."
+        ],
+        "financial_news": [
+            "💰 The financial markets are beginning to understand what technologists have known for years.",
+            "📊 This valuation reflects not just current performance, but future potential.",
+            "💎 We're witnessing the monetization of innovation at scale."
+        ],
+        "technical_breakthrough": [
+            "🧠 This breakthrough represents a fundamental advancement in our technological capabilities.",
+            "⚡️ What we're seeing here is the acceleration of human potential through technology.",
+            "🔮 This isn't just progress—it's a glimpse into a future we're actively creating."
+        ],
+        "competitive_dynamics": [
+            "🥊 The competitive landscape is evolving faster than traditional business models can adapt.",
+            "⚔️ What we're witnessing is the natural selection of innovation in the marketplace.",
+            "🎯 This competition isn't just about market share—it's about defining the future."
+        ],
+        "general_development": [
+            "💭 Every development like this brings us closer to the future we're building.",
+            "🎯 The pace of innovation is accelerating beyond our ability to predict outcomes.",
+            "⚡️ We're living through a period of unprecedented technological transformation."
+        ]
+    }
+    
+    take = random.choice(thought_leader_takes.get(story_angle, thought_leader_takes["general_development"]))
+    
+    post = f"{take}\n\n"
+    
+    # Add thought-provoking question
+    if story_angle == "regulatory_breakthrough":
+        post += "The question now is: how will this reshape the landscape? 🤔"
+    elif story_angle == "business_move":
+        post += "What does this tell us about the direction of the industry? 💭"
+    elif story_angle == "product_launch":
+        post += "How will this change the way we think about technology? 🔍"
+    elif story_angle == "financial_news":
+        post += "What does this reveal about market sentiment? 📊"
+    elif story_angle == "technical_breakthrough":
+        post += "How will this advance our collective capabilities? 🚀"
+    else:
+        post += "What does this development mean for the future? 🌟"
+    
+    return post
+
+
+def _create_meme_short_post(story_angle: str, title: str) -> str:
+    """Create a meme-style short post."""
+    
+    meme_takes = {
+        "regulatory_breakthrough": [
+            "🚨 The regulators finally woke up and chose violence 😤",
+            "🎯 Government: 'We approve' | Me: 'About time' 😏",
+            "⚡️ The bureaucracy just got a speed upgrade 🚀"
+        ],
+        "business_move": [
+            "🤝 Plot twist: The industry just got a lot more interesting 🎬",
+            "💼 Business: *makes move* | Me: *surprised Pikachu face* 😱",
+            "🎯 Someone's playing 4D chess while we're playing tic-tac-toe ♟️"
+        ],
+        "product_launch": [
+            "🚀 Another 'revolutionary' product that will definitely change everything (this time for real) 😅",
+            "🎉 The future is here (again, for the 47th time this month) 🕐",
+            "⚡️ Innovation speed: 0 to 100 real quick 🏃‍♂️💨"
+        ],
+        "financial_news": [
+            "💰 Money talks, and it's saying some spicy things 🌶️",
+            "📈 The numbers don't lie (but they do tell stories) 📊",
+            "💎 Someone's making moves while we're making memes 😎"
+        ],
+        "technical_breakthrough": [
+            "🧠 The AI just got smarter (and we're still trying to figure out our phones) 📱",
+            "⚡️ Technology: Moving faster than our ability to understand it 🚀",
+            "🔮 The future is now, and it's wearing a neural network 🤖"
+        ],
+        "competitive_dynamics": [
+            "🥊 The gloves are off in the tech world 🥊",
+            "🎯 Someone's playing to win, not just to participate 🏆",
+            "⚔️ The battle for supremacy continues... (popcorn time) 🍿"
+        ],
+        "general_development": [
+            "🎯 Another piece of the puzzle falls into place 🧩",
+            "🚀 Progress doesn't wait for permission (and neither do we) 💪",
+            "💡 Innovation happens whether we're ready or not 🚀"
+        ]
+    }
+    
+    take = random.choice(meme_takes.get(story_angle, meme_takes["general_development"]))
+    
+    post = f"{take}\n\n"
+    
+    # Add meme-style ending
+    if story_angle == "regulatory_breakthrough":
+        post += "The timeline just got a major upgrade ⚡️😎"
+    elif story_angle == "business_move":
+        post += "The plot thickens... 🕵️‍♂️🍿"
+    elif story_angle == "product_launch":
+        post += "Will this one actually work? (Asking for a friend) 🤔"
+    elif story_angle == "financial_news":
+        post += "The market giveth and the market taketh away 📊🙏"
+    elif story_angle == "technical_breakthrough":
+        post += "Humanity: Still trying to keep up with our own creations 🤖💀"
+    else:
+        post += "The future is now, old man 👴⚡️"
+    
+    return post
+
+
+def _create_professional_short_post(story_angle: str, title: str) -> str:
+    """Create a professional short post."""
+    
+    professional_takes = {
+        "regulatory_breakthrough": [
+            "📊 This regulatory approval represents a significant milestone for the industry.",
+            "🎯 The green light from regulators opens new opportunities for growth and innovation.",
+            "⚡️ This approval signals broader acceptance of emerging technologies."
+        ],
+        "business_move": [
+            "💼 This strategic development reflects the evolving landscape of the industry.",
+            "🎯 The partnership demonstrates the value of collaboration in driving innovation.",
+            "💡 This move positions the company for future growth and market expansion."
+        ],
+        "product_launch": [
+            "🚀 This launch introduces new capabilities that address evolving market needs.",
+            "💡 The product represents a significant advancement in technological innovation.",
+            "⚡️ This release demonstrates the company's commitment to continuous improvement."
+        ],
+        "financial_news": [
+            "💰 The financial performance reflects strong market fundamentals and growth potential.",
+            "📈 This development indicates positive market sentiment and investor confidence.",
+            "💎 The valuation reflects the company's strategic position and future prospects."
+        ],
+        "technical_breakthrough": [
+            "🧠 This technical advancement represents a significant step forward in the field.",
+            "⚡️ The breakthrough demonstrates the potential for transformative innovation.",
+            "🔮 This development opens new possibilities for technological advancement."
+        ],
+        "competitive_dynamics": [
+            "🥊 The competitive landscape continues to evolve with new market entrants.",
+            "⚔️ This development reflects the dynamic nature of the industry.",
+            "🎯 The competition drives innovation and benefits consumers."
+        ],
+        "general_development": [
+            "📈 This development represents continued progress in the industry.",
+            "🎯 The advancement demonstrates the ongoing evolution of technology.",
+            "⚡️ This progress contributes to the overall growth of the sector."
+        ]
+    }
+    
+    take = random.choice(professional_takes.get(story_angle, professional_takes["general_development"]))
+    
+    post = f"{take}\n\n"
+    
+    # Add professional closing
+    if story_angle == "regulatory_breakthrough":
+        post += "This milestone paves the way for future developments. 📈"
+    elif story_angle == "business_move":
+        post += "The strategic implications are significant. 💼"
+    elif story_angle == "product_launch":
+        post += "The market impact will be worth monitoring. 📊"
+    elif story_angle == "financial_news":
+        post += "The financial implications are positive. 💰"
+    elif story_angle == "technical_breakthrough":
+        post += "The technical implications are substantial. 🧠"
+    else:
+        post += "The development represents positive progress. ✅"
+    
+    return post
 
 
 def _format_long_content(title: str, content: str, url: str, tone: str) -> str:

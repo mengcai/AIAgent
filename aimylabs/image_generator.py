@@ -122,18 +122,24 @@ def create_image_prompt_from_news(title: str, content: str, tone: str) -> str:
             key_concepts.append(keyword)
     
     # Web3-related keywords
-    web3_keywords = ["blockchain", "crypto", "DeFi", "NFT", "Web3", "smart contract"]
+    web3_keywords = ["blockchain", "crypto", "DeFi", "NFT", "Web3", "smart contract", "ethereum", "bitcoin"]
     for keyword in web3_keywords:
         if keyword.lower() in (title + " " + content).lower():
             key_concepts.append(keyword)
     
-    # Tone-specific styling
+    # Financial keywords
+    financial_keywords = ["funding", "investment", "valuation", "presale", "launch", "partnership"]
+    for keyword in financial_keywords:
+        if keyword.lower() in (title + " " + content).lower():
+            key_concepts.append(keyword)
+    
+    # Tone-specific styling and creative elements
     tone_styles = {
-        "witty": "playful, clever, with subtle humor",
-        "professional": "clean, corporate, business-focused",
-        "hype": "energetic, dynamic, exciting",
-        "meme": "fun, viral, internet culture style",
-        "thought_leader": "sophisticated, insightful, premium"
+        "witty": "playful, clever, with subtle humor, modern meme aesthetic",
+        "professional": "clean, corporate, business-focused, premium quality",
+        "hype": "energetic, dynamic, exciting, futuristic, glowing effects",
+        "meme": "fun, viral, internet culture style, bold colors, trending aesthetic",
+        "thought_leader": "sophisticated, insightful, premium, elegant, minimalist"
     }
     
     style = tone_styles.get(tone, "professional")
@@ -141,10 +147,17 @@ def create_image_prompt_from_news(title: str, content: str, tone: str) -> str:
     if not key_concepts:
         key_concepts = ["technology", "innovation", "future"]
     
-    # Create the image prompt
-    prompt = f"Visual representation of: {title}. "
-    prompt += f"Key elements: {', '.join(key_concepts[:3])}. "
-    prompt += f"Style: {style}, modern tech aesthetic, suitable for social media sharing."
+    # Create a more creative, engaging image prompt
+    if "ethereum" in title.lower() or "eth" in title.lower():
+        prompt = f"Creative visualization: A golden Ethereum logo glowing like a treasure chest, surrounded by digital coins and charts, {style} aesthetic, modern tech art, perfect for social media"
+    elif "bitcoin" in title.lower() or "btc" in title.lower():
+        prompt = f"Creative visualization: A majestic Bitcoin symbol emerging from digital clouds, with lightning effects and golden rays, {style} aesthetic, futuristic crypto art"
+    elif "funding" in title.lower() or "investment" in title.lower():
+        prompt = f"Creative visualization: Money flowing like digital rivers, with charts and graphs floating in space, {style} aesthetic, financial technology art"
+    elif "launch" in title.lower() or "release" in title.lower():
+        prompt = f"Creative visualization: A rocket launching into a digital universe, with stars and planets made of code, {style} aesthetic, space tech art"
+    else:
+        prompt = f"Creative visualization: {title}, featuring {', '.join(key_concepts[:3])}, {style} aesthetic, modern digital art, perfect for social media engagement"
     
     return prompt
 
