@@ -96,7 +96,7 @@ def _auto_determine_type(
     """Automatically determine content type based on importance score."""
     if importance_score > 0.7 and enable_threads:
         return "thread"
-    elif importance_score > 0.3:  # Lower threshold for long posts when images disabled
+    elif importance_score > 0.1:  # Much lower threshold - almost everything gets long posts
         return "long"
     elif importance_score > 0.15 and enable_images:  # Only use image if enabled
         return "image"

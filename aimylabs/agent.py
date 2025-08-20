@@ -67,6 +67,8 @@ class AimylabsAgent:
                     enable_images=cfg.app.enable_images
                 )
                 
+
+                
                 # Generate content based on strategy
                 if strategy.content_type == "image" and cfg.app.enable_images and cfg.openai_api_key:
                     # Generate image using the prompt from the strategy
