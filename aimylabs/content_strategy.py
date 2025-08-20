@@ -1061,7 +1061,11 @@ def _get_strategic_mentions(story_angle: str, title: str, content: str) -> str:
         "bitcoin": "@Bitcoin @SBF_FTX",
         "a16z": "@a16z @marcandreessen",
         "sequoia": "@sequoia @michael_moritz",
-        "ycombinator": "@ycombinator @paulg"
+        "ycombinator": "@ycombinator @paulg",
+        "kraken": "@kraken @jespow",
+        "winklevoss": "@tyler @cameron",
+        "republican": "@GOP @SenateGOP",
+        "congress": "@HouseGOP @SenateGOP"
     }
     
     # Story-specific mentions
@@ -1083,9 +1087,18 @@ def _get_strategic_mentions(story_angle: str, title: str, content: str) -> str:
     if story_angle in story_mentions:
         mentions.append(story_mentions[story_angle])
     
-    # Add trending mentions
-    trending_mentions = ["@balajis", "@naval", "@pmarca", "@elonmusk", "@VitalikButerin"]
-    mentions.extend(trending_mentions[:2])  # Limit to 2 trending mentions
+    # Add dynamic trending mentions (rotate through different sets)
+    trending_sets = [
+        ["@balajis", "@naval", "@pmarca"],
+        ["@VitalikButerin", "@sama", "@ylecun"],
+        ["@elonmusk", "@cz_binance", "@michael_saylor"],
+        ["@a16z", "@paradigm", "@polychain"],
+        ["@pomp", "@real_vijay", "@sbf_ftx"]
+    ]
+    
+    # Randomly select a trending set
+    selected_trending = random.choice(trending_sets)
+    mentions.extend(selected_trending[:2])  # Limit to 2 trending mentions
     
     return " ".join(mentions[:4])  # Limit total mentions
 
@@ -1134,17 +1147,52 @@ def _extract_key_hashtags(title: str, content: str) -> str:
 def _get_viral_closing(story_angle: str) -> str:
     """Get viral closing statements to boost engagement."""
     
+    # Multiple options for each story angle to add variety
     viral_closings = {
-        "regulatory_breakthrough": "The future of regulation is being written right now. What's your take? 🤔",
-        "business_move": "Who's next to make a power move? The chess game continues... ♟️",
-        "product_launch": "Will this change everything, or just our Twitter feeds? The jury's out! 🧑‍⚖️",
-        "financial_news": "Money talks, but what is it saying? The plot thickens... 📊",
-        "technical_breakthrough": "Humanity just leveled up. What's the next breakthrough? 🔮",
-        "competitive_dynamics": "The race is on! Who's leading the innovation charge? 🏃‍♂️",
-        "general_development": "The future is unfolding before our eyes. Are you ready? ✨"
+        "regulatory_breakthrough": [
+            "The future of regulation is being written right now. What's your take? 🤔",
+            "Regulatory chess moves are getting interesting. Who's next? ♟️",
+            "The rules are changing. Are you ready to adapt? 📋"
+        ],
+        "business_move": [
+            "Who's next to make a power move? The chess game continues... ♟️",
+            "Strategic positioning at its finest. What's the endgame? 🎯",
+            "Business moves like this reshape entire industries. Watch this space! 🚀"
+        ],
+        "product_launch": [
+            "Will this change everything, or just our Twitter feeds? The jury's out! 🧑‍⚖️",
+            "Innovation meets execution. This could be the game-changer we've been waiting for! ⚡",
+            "Product launches like this define market leadership. Impressive! 🎉"
+        ],
+        "financial_news": [
+            "Money talks, but what is it saying? The plot thickens... 📊",
+            "Financial moves like this signal market confidence. Bullish! 🐂",
+            "The numbers don't lie. This is significant market activity! 📈"
+        ],
+        "technical_breakthrough": [
+            "Humanity just leveled up. What's the next breakthrough? 🔮",
+            "Technical innovation at its finest. The future is now! ⚡",
+            "Breakthroughs like this accelerate progress by years. Amazing! 🚀"
+        ],
+        "competitive_dynamics": [
+            "The race is on! Who's leading the innovation charge? 🏃‍♂️",
+            "Competitive dynamics are heating up. This is going to be interesting! 🔥",
+            "Market positioning at its most strategic. Who will emerge victorious? 🏆"
+        ],
+        "general_development": [
+            "The future is unfolding before our eyes. Are you ready? ✨",
+            "Innovation never sleeps. This is exactly what progress looks like! 🌟",
+            "The pace of change is accelerating. Buckle up for the ride! 🎢",
+            "This is the kind of development that shapes tomorrow. Exciting times! 🚀",
+            "Progress happens one breakthrough at a time. This is a good one! 📈"
+        ]
     }
     
-    return viral_closings.get(story_angle, "The future is now. What's next? 🚀")
+    # Get the list for the story angle, or use general_development as fallback
+    angle_closings = viral_closings.get(story_angle, viral_closings["general_development"])
+    
+    # Randomly select from the available options
+    return random.choice(angle_closings)
 
 
 def _format_long_content(title: str, content: str, url: str, tone: str) -> str:
@@ -1239,6 +1287,12 @@ def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> 
     
     content = f"{random.choice(dynamic_openings)}\n\n"
     
+    # Include article title for context and SEO
+    clean_title = title.replace('<p>', '').replace('</p>', '').strip()
+    if len(clean_title) > 80:  # Truncate very long titles
+        clean_title = clean_title[:77] + "..."
+    content += f"📰 {clean_title}\n\n"
+    
     # More concise, impactful insights
     if len(key_points) > 0:
         key_insights = key_points[:2]  # Limit to 2 most important points
@@ -1263,7 +1317,7 @@ def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> 
     viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"📖 {url}"
+    content += f"🔗 {url}"
     
     return content
 
@@ -1283,6 +1337,12 @@ def _format_professional_post(title: str, key_points: List[str], url: str) -> st
     ]
     
     content = f"{random.choice(dynamic_openings)}\n\n"
+    
+    # Include article title for context and SEO
+    clean_title = title.replace('<p>', '').replace('</p>', '').strip()
+    if len(clean_title) > 80:  # Truncate very long titles
+        clean_title = clean_title[:77] + "..."
+    content += f"📰 {clean_title}\n\n"
     
     # More concise, strategic insights
     if len(key_points) > 0:
@@ -1308,7 +1368,7 @@ def _format_professional_post(title: str, key_points: List[str], url: str) -> st
     viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"📖 {url}"
+    content += f"🔗 {url}"
     
     return content
 
@@ -1330,6 +1390,12 @@ def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
     
     opening = random.choice(dynamic_openings)
     content = f"{opening}\n\n"
+    
+    # Include article title for context and SEO
+    clean_title = title.replace('<p>', '').replace('</p>', '').strip()
+    if len(clean_title) > 80:  # Truncate very long titles
+        clean_title = clean_title[:77] + "..."
+    content += f"📰 {clean_title}\n\n"
     
     # More concise, impactful insights
     if len(key_points) > 0:
@@ -1359,8 +1425,8 @@ def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
     viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    # Clean URL presentation
-    content += f"📖 {url}"
+    # Clean URL presentation with better formatting for image previews
+    content += f"🔗 {url}"
     
     return content
 
