@@ -987,6 +987,33 @@ def _add_viral_elements(title: str, content: str, story_angle: str) -> str:
     return viral_section
 
 
+def _add_viral_elements_concise(title: str, content: str, story_angle: str) -> str:
+    """Add streamlined viral elements for dynamic, concise posts."""
+    
+    # Strategic mentions based on story angle
+    strategic_mentions = _get_strategic_mentions(story_angle, title, content)
+    
+    # Extract and hashtag key keywords
+    key_hashtags = _extract_key_hashtags(title, content)
+    
+    # Add viral closing statements
+    viral_closing = _get_viral_closing(story_angle)
+    
+    # Combine all viral elements in a more compact format (no extra line breaks)
+    viral_section = ""
+    
+    if strategic_mentions:
+        viral_section += f"👥 {strategic_mentions}\n"
+    
+    if key_hashtags:
+        viral_section += f"🏷️ {key_hashtags}\n"
+    
+    if viral_closing:
+        viral_section += f"💭 {viral_closing}\n"
+    
+    return viral_section
+
+
 def _get_preview_hint(title: str, content: str) -> str:
     """Add a hint about what visual content readers can expect from the link."""
     
@@ -1197,137 +1224,143 @@ def _extract_key_points(content: str) -> List[str]:
 
 
 def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> str:
-    """Format content in thought leader style - natural and personal."""
+    """Format content in thought leader style - dynamic and insightful."""
     
-    # Personal, thoughtful openings
-    thoughtful_openings = [
-        "I've been reflecting on this development, and there's more here than meets the eye.",
-        "This story has me thinking about the bigger picture. Let me share why:",
-        "Sometimes a single announcement reveals much larger trends. This is one of those times.",
-        "I keep coming back to this news because it signals something important:",
-        "After diving deep into this, I think there are some key insights worth sharing:",
-        "This caught my eye not just for what it is, but for what it represents:",
-        "Been analyzing this from multiple angles. Here's what stands out to me:"
+    # Dynamic, insightful openings
+    dynamic_openings = [
+        "🔍 This development reveals a fascinating pattern I've been tracking:",
+        "💭 The strategic depth here is worth unpacking. Here's my analysis:",
+        "🎯 This isn't just news—it's a signal of broader market evolution:",
+        "🧠 The implications extend far beyond the headline. Let me break it down:",
+        "⚡ This represents a convergence I've been anticipating. Here's why it matters:",
+        "🌊 This could trigger a wave of similar moves. The timing is strategic:",
+        "🔮 Looking at this through a strategic lens reveals something important:"
     ]
     
-    content = f"{random.choice(thoughtful_openings)}\n\n"
+    content = f"{random.choice(dynamic_openings)}\n\n"
     
-    # Add insights in a personal, analytical way
+    # More concise, impactful insights
     if len(key_points) > 0:
-        content += "Key observations:\n\n"
-        for i, point in enumerate(key_points, 1):
-            content += f"→ {point}\n\n"
+        key_insights = key_points[:2]  # Limit to 2 most important points
+        for point in key_insights:
+            clean_point = point.replace('<p>', '').replace('</p>', '').strip()
+            if len(clean_point) > 120:  # Truncate long points
+                clean_point = clean_point[:117] + "..."
+            content += f"→ {clean_point}\n\n"
     
-    # Personal reflection and broader implications
-    reflective_conclusions = [
-        "Looking ahead, I think this represents a fundamental shift in how we approach innovation.",
-        "The strategic implications here are significant, and I suspect we'll see more moves like this.",
-        "What excites me most is how this could accelerate progress across the entire ecosystem.",
-        "This feels like one of those moments we'll look back on as a turning point.",
-        "The convergence happening here is exactly what I've been anticipating.",
-        "From a strategic perspective, this timing couldn't be more telling."
+    # Dynamic, thought-provoking conclusions
+    dynamic_conclusions = [
+        "The strategic implications here are profound. This could accelerate industry consolidation by 12-18 months.",
+        "What's most interesting is the timing. This feels like the beginning of a much larger strategic realignment.",
+        "The convergence of these technologies creates a competitive moat that's hard to replicate.",
+        "This move positions them perfectly for the next phase of market evolution. Brilliant timing.",
+        "The ripple effects will extend far beyond their immediate market. Watch this space carefully."
     ]
     
-    content += random.choice(reflective_conclusions) + "\n\n"
-    content += "What's your take? I'd love to hear different perspectives on this.\n\n"
+    content += random.choice(dynamic_conclusions) + "\n\n"
     
-    # Add viral elements for maximum engagement
-    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    # Streamlined viral elements
+    viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"Source: {url}"
+    content += f"📖 {url}"
     
     return content
 
 
 def _format_professional_post(title: str, key_points: List[str], url: str) -> str:
-    """Format content in professional style - natural and personal."""
+    """Format content in professional style - dynamic and strategic."""
     
-    # Professional but personal openings
-    professional_openings = [
-        "Sharing some insights on this important development:",
-        "Worth taking a closer look at this announcement. Here's why:",
-        "This deserves attention from anyone following the space:",
-        "Breaking down what this means for the industry:",
-        "Some key takeaways from today's news:",
-        "This caught my attention as a significant development:",
-        "Quick analysis on what just happened in the market:"
+    # Dynamic, strategic openings
+    dynamic_openings = [
+        "📊 Market analysis: This development has significant implications:",
+        "💼 Strategic insight: This move reveals a calculated market position:",
+        "🎯 Industry impact: This could reshape competitive dynamics:",
+        "⚡ Market timing: The strategic value of this announcement:",
+        "🔍 Competitive analysis: What this means for market positioning:",
+        "📈 Growth implications: This development accelerates market evolution:",
+        "🏗️ Strategic architecture: How this builds competitive advantage:"
     ]
     
-    content = f"{random.choice(professional_openings)}\n\n"
+    content = f"{random.choice(dynamic_openings)}\n\n"
     
-    # Add insights in a professional but conversational way
+    # More concise, strategic insights
     if len(key_points) > 0:
-        content += "Key points to consider:\n\n"
-        for i, point in enumerate(key_points, 1):
-            content += f"✓ {point}\n"
-        content += "\n"
+        key_insights = key_points[:2]  # Limit to 2 most important points
+        for point in key_insights:
+            clean_point = point.replace('<p>', '').replace('</p>', '').strip()
+            if len(clean_point) > 120:  # Truncate long points
+                clean_point = clean_point[:117] + "..."
+            content += f"✓ {clean_point}\n\n"
     
-    # Professional but personal conclusion
-    professional_conclusions = [
-        "The market implications are worth monitoring closely.",
-        "This aligns with broader trends I've been tracking in the space.",
-        "Interesting to see how this plays out over the coming months.",
-        "Another piece of the puzzle falling into place.",
-        "The timing here suggests more developments ahead.",
-        "Worth keeping this on your radar if you're in the space."
+    # Dynamic, strategic conclusions
+    strategic_conclusions = [
+        "The competitive positioning here is strategic. This could create a 6-12 month advantage.",
+        "Market timing suggests this is part of a larger strategic initiative. Watch for follow-on moves.",
+        "The competitive moat this creates is significant. Rivals will need to respond strategically.",
+        "This positions them perfectly for the next market cycle. Strategic depth meets execution.",
+        "The ripple effects across the ecosystem will be substantial. This is a market-moving development."
     ]
     
-    content += random.choice(professional_conclusions) + "\n\n"
+    content += random.choice(strategic_conclusions) + "\n\n"
     
-    # Add viral elements for maximum engagement
-    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    # Streamlined viral elements
+    viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    content += f"Details: {url}"
+    content += f"📖 {url}"
     
     return content
 
 
 def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
-    """Format content in witty style - natural and personal."""
+    """Format content in witty style - dynamic and concise."""
     
-    # Create natural, personal openings
-    personal_openings = [
-        "Just saw this and had to share my thoughts...",
-        "Okay, this caught my attention and I need to break it down:",
-        "Been thinking about this all morning. Here's why it matters:",
-        "This popped up on my feed and honestly? Mind blown.",
-        "Hot take incoming on this news:",
-        "Diving deep into this because the implications are wild:",
-        "Can we talk about this for a second? Because wow.",
-        "Reading between the lines here, and here's what I see:"
+    # Dynamic, varied openings that feel fresh
+    dynamic_openings = [
+        "🚀 This is the kind of news that makes me sit up and pay attention.",
+        "💡 Been waiting for this move. Here's why it's significant:",
+        "🔥 Hot take: This acquisition changes the game completely.",
+        "🎯 Finally, someone's connecting the dots. This is bigger than it looks:",
+        "⚡ This caught my eye because it's exactly what the space needs right now.",
+        "🔮 Saw this coming, but the execution is brilliant. Here's the breakdown:",
+        "💎 This is the kind of strategic play that separates winners from followers.",
+        "🚁 The timing here is impeccable. Let me explain why this matters:"
     ]
     
-    opening = random.choice(personal_openings)
+    opening = random.choice(dynamic_openings)
     content = f"{opening}\n\n"
     
-    # Add the main insights in a conversational way
+    # More concise, impactful insights
     if len(key_points) > 0:
-        content += "Here's what's really happening:\n\n"
-        for i, point in enumerate(key_points, 1):
-            content += f"• {point}\n"
+        # Take only the most important 2-3 points and make them punchy
+        key_insights = key_points[:3]
+        for point in key_insights:
+            # Make points more concise and impactful
+            clean_point = point.replace('<p>', '').replace('</p>', '').strip()
+            if len(clean_point) > 100:  # Truncate long points
+                clean_point = clean_point[:97] + "..."
+            content += f"• {clean_point}\n"
         content += "\n"
     
-    # Personal take/conclusion
-    personal_conclusions = [
-        "My take? This is bigger than it looks. The ripple effects are going to be interesting.",
-        "Honestly, I think we're seeing the early stages of something massive here.",
-        "The more I think about it, the more convinced I am this changes everything.",
-        "Not gonna lie, this has me excited about what comes next.",
-        "This is exactly the kind of innovation that keeps me up at night (in a good way).",
-        "Call me optimistic, but I think this is just the beginning.",
-        "The timing on this couldn't be more perfect. Here's why:"
+    # Dynamic, thought-provoking conclusions
+    dynamic_conclusions = [
+        "The strategic implications here are massive. This isn't just an acquisition—it's a statement about where the industry is headed.",
+        "What excites me most is the timing. This feels like the beginning of a much larger consolidation wave.",
+        "The no-code + AI + trading combo? That's the future right there. Brilliant move.",
+        "This is exactly the kind of innovation that accelerates entire ecosystems. Watch this space.",
+        "The convergence happening here is what I've been anticipating. This could be a game-changer.",
+        "Strategic depth meets execution excellence. This is how you build market leadership."
     ]
     
-    content += random.choice(personal_conclusions) + "\n\n"
+    content += random.choice(dynamic_conclusions) + "\n\n"
     
-    # Add viral elements for maximum engagement
-    viral_elements = _add_viral_elements(title, " ".join(key_points), "general_development")
+    # Streamlined viral elements (more concise)
+    viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
     
-    # Add URL with natural introduction
-    content += f"Full story: {url}"
+    # Clean URL presentation
+    content += f"📖 {url}"
     
     return content
 
