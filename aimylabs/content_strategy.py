@@ -1287,10 +1287,10 @@ def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> 
     
     content = f"{random.choice(dynamic_openings)}\n\n"
     
-    # Include article title for context and SEO
+    # Include article title for context and SEO (less aggressive truncation)
     clean_title = title.replace('<p>', '').replace('</p>', '').strip()
-    if len(clean_title) > 80:  # Truncate very long titles
-        clean_title = clean_title[:77] + "..."
+    if len(clean_title) > 120:  # Allow longer titles
+        clean_title = clean_title[:117] + "..."
     content += f"📰 {clean_title}\n\n"
     
     # More concise, impactful insights
@@ -1313,11 +1313,12 @@ def _format_thought_leader_post(title: str, key_points: List[str], url: str) -> 
     
     content += random.choice(dynamic_conclusions) + "\n\n"
     
-    # Streamlined viral elements
+    # Add URL early for better visibility and image previews
+    content += f"🔗 {url}\n\n"
+    
+    # Streamlined viral elements - always at the end
     viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
-    
-    content += f"🔗 {url}"
     
     return content
 
@@ -1338,10 +1339,10 @@ def _format_professional_post(title: str, key_points: List[str], url: str) -> st
     
     content = f"{random.choice(dynamic_openings)}\n\n"
     
-    # Include article title for context and SEO
+    # Include article title for context and SEO (less aggressive truncation)
     clean_title = title.replace('<p>', '').replace('</p>', '').strip()
-    if len(clean_title) > 80:  # Truncate very long titles
-        clean_title = clean_title[:77] + "..."
+    if len(clean_title) > 120:  # Allow longer titles
+        clean_title = clean_title[:117] + "..."
     content += f"📰 {clean_title}\n\n"
     
     # More concise, strategic insights
@@ -1364,11 +1365,12 @@ def _format_professional_post(title: str, key_points: List[str], url: str) -> st
     
     content += random.choice(strategic_conclusions) + "\n\n"
     
-    # Streamlined viral elements
+    # Add URL early for better visibility and image previews
+    content += f"🔗 {url}\n\n"
+    
+    # Streamlined viral elements - always at the end
     viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
-    
-    content += f"🔗 {url}"
     
     return content
 
@@ -1391,10 +1393,10 @@ def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
     opening = random.choice(dynamic_openings)
     content = f"{opening}\n\n"
     
-    # Include article title for context and SEO
+    # Include article title for context and SEO (less aggressive truncation)
     clean_title = title.replace('<p>', '').replace('</p>', '').strip()
-    if len(clean_title) > 80:  # Truncate very long titles
-        clean_title = clean_title[:77] + "..."
+    if len(clean_title) > 120:  # Allow longer titles
+        clean_title = clean_title[:117] + "..."
     content += f"📰 {clean_title}\n\n"
     
     # More concise, impactful insights
@@ -1421,12 +1423,12 @@ def _format_witty_post(title: str, key_points: List[str], url: str) -> str:
     
     content += random.choice(dynamic_conclusions) + "\n\n"
     
-    # Streamlined viral elements (more concise)
+    # Add URL early for better visibility and image previews
+    content += f"🔗 {url}\n\n"
+    
+    # Streamlined viral elements (more concise) - always at the end
     viral_elements = _add_viral_elements_concise(title, " ".join(key_points), "general_development")
     content += viral_elements
-    
-    # Clean URL presentation with better formatting for image previews
-    content += f"🔗 {url}"
     
     return content
 
