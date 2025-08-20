@@ -99,11 +99,9 @@ class AimylabsAgent:
             elif strategy.content_type == "long":
                 result = publish_long_post(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)
             elif strategy.content_type == "image" and strategy.use_image and strategy.image_prompt:
-                print(f"\n🎨 IMAGE POST CONTENT:")
-                print(f"Content: {strategy.content_parts[0]}")
-                print(f"Image prompt: {strategy.image_prompt}")
-                print("---")
                 result = publish_with_image(api, strategy.content_parts[0], strategy.image_prompt, dry_run=cfg.app.dry_run)
+            elif strategy.content_type == "image":
+                result = publish_tweet(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)
             else:
                 # Default to short tweet
                 result = publish_tweet(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)

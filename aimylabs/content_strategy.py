@@ -94,11 +94,11 @@ def _auto_determine_type(
     enable_images: bool
 ) -> str:
     """Automatically determine content type based on importance score."""
-    if importance_score > 0.6 and enable_threads:
+    if importance_score > 0.7 and enable_threads:
         return "thread"
-    elif importance_score > 0.4:
+    elif importance_score > 0.5:
         return "long"
-    elif importance_score > 0.2 and enable_images:  # Lower threshold for images
+    elif importance_score > 0.15 and enable_images:  # Much lower threshold for images
         return "image"
     else:
         return "short"
