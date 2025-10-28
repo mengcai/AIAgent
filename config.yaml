@@ -2,14 +2,14 @@ app:
   timezone: America/Los_Angeles
   dry_run: false
   max_daily_posts: 1
-  post_times: ["08:00", "20:00"]
+  post_times: ["08:00"]
   use_premium_features: true
   max_post_length: 25000
   enable_threads: true
   enable_images: false  # Disabled for now - focus on enhanced content generation
 
 style:
-  tone: witty
+  tone: professional
   use_emojis: true
   default_hashtags: ["#AI", "#Web3", "#DeFi", "#Crypto", "#AIAgent"]
   max_hashtags: 5

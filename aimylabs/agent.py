@@ -99,6 +99,10 @@ class AimylabsAgent:
             if strategy.content_type == "thread":
                 result = publish_thread(api, strategy.content_parts, dry_run=cfg.app.dry_run)
             elif strategy.content_type == "long":
+                print(f"\n🚀 ENHANCED PROFESSIONAL CONTENT:")
+                print("=" * 80)
+                print(strategy.content_parts[0])
+                print("=" * 80)
                 result = publish_long_post(api, strategy.content_parts[0], dry_run=cfg.app.dry_run)
             elif strategy.content_type == "image" and strategy.use_image and strategy.image_prompt:
                 result = publish_with_image(api, strategy.content_parts[0], strategy.image_prompt, dry_run=cfg.app.dry_run)
