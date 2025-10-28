@@ -99,7 +99,7 @@ class AimylabsAgent:
             if strategy.content_type == "thread":
                 result = publish_thread(api, strategy.content_parts, dry_run=cfg.app.dry_run)
             elif strategy.content_type == "long":
-                print(f"\n🚀 ENHANCED PROFESSIONAL CONTENT:")
+                print(f"\n🚀 HUMANIZED AUTHENTIC CONTENT:")
                 print("=" * 80)
                 print(strategy.content_parts[0])
                 print("=" * 80)
